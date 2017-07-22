@@ -1,0 +1,10 @@
+/build/
+/dist/
+/.settings/
+/twisted/plugins/dropin.cache
+/config.ini*
+/*.sqlite
+*.pyc
+/twistd.pid
+/deploy.sh
+__pycache__/

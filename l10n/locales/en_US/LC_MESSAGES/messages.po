@@ -1,0 +1,66 @@
+# English (United States) translations for PROJECT.
+# Copyright (C) 2017 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2017-07-22 12:37+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en_US\n"
+"Language-Team: en_US <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.4.0\n"
+
+#: telegram/bot.py:37
+#, python-format
+msgid ""
+"Unknown command: /%(cmd)s\n"
+"Please use /help for list of available commands."
+msgstr ""
+
+#: telegram/bot.py:41
+msgid ""
+"Hello, I'm *AQI monitor bot*.\n"
+"For help, please use /help command."
+msgstr ""
+
+#: telegram/bot.py:44
+msgid ""
+"*Available commands:*\n"
+"\n"
+"/aqi - show current AQI value\n"
+"/pm - show current PM values"
+msgstr ""
+
+#: telegram/bot.py:51 telegram/bot.py:59
+msgid "No data from PM sensor obtained yet."
+msgstr ""
+
+#: telegram/bot.py:54
+#, python-format
+msgid "AQI: *%(aqi)s* (updated %(rtime)s ago)"
+msgstr ""
+
+#: telegram/bot.py:62
+#, python-format
+msgid ""
+"PM2.5: *%(pm_25)s* μg/m^3\n"
+"PM10: *%(pm_10)s* μg/m^3\n"
+"(updated %(rtime)s ago)"
+msgstr ""
+
+#: telegram/bot.py:68
+#, python-format
+msgid ""
+"PM sensor info:\n"
+"Firmware version: *%(fw)s*"
+msgstr ""
+
