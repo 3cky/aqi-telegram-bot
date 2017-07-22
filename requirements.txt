@@ -7,3 +7,5 @@ pyserial
 babel
 humanfriendly
 python-aqi
+beautifulsoup4
+markdown2

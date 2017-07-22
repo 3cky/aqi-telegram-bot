@@ -4,6 +4,10 @@ import time
 
 import babel.dates
 
+import markdown2
+
+from bs4 import BeautifulSoup
+
 from datetime import timedelta
 
 from twisted.internet import defer
@@ -81,14 +85,17 @@ class Bot(service.Service, BotPlugin):
         m.callback_query_id = callback_query.id
         yield self.send_method(m)
 
-        # update message with command result
-        m = editMessageText()
-        m.chat_id = callback_query.message.chat.id
-        m.message_id = callback_query.message.message_id
-        m.text = yield self.on_command(callback_query.data)
-        m.parse_mode = 'Markdown'
-        m.reply_markup = self.inline_keyboard()
-        yield self.send_method(m)
+        # update message with command result (if text updated)
+        text = yield self.on_command(callback_query.data)
+        plain_text = BeautifulSoup(markdown2.markdown(text), "html.parser").get_text().strip()
+        if plain_text != callback_query.message.text:
+            m = editMessageText()
+            m.chat_id = callback_query.message.chat.id
+            m.message_id = callback_query.message.message_id
+            m.text = text
+            m.parse_mode = 'Markdown'
+            m.reply_markup = self.inline_keyboard()
+            yield self.send_method(m)
 
         defer.returnValue(True)
 
