@@ -10,6 +10,8 @@ from twisted.internet import defer
 from twisted.application import service
 
 from TelegramBot.plugin.bot import BotPlugin
+from TelegramBotAPI.types import InlineKeyboardMarkup, InlineKeyboardButton
+from TelegramBotAPI.types.methods import sendMessage, answerCallbackQuery, editMessageText
 
 
 class Bot(service.Service, BotPlugin):
@@ -37,13 +39,18 @@ class Bot(service.Service, BotPlugin):
         return _(u'Unknown command: /%(cmd)s\n' +
                  u'Please use /help for list of available commands.') % {'cmd': cmd}
 
-    def on_command_start(self, _args, _cmd_msg):
-        return _(u"Hello, I'm *AQI monitor bot*.\nFor help, please use /help command.")
+    def on_command_start(self, _args, cmd_msg):
+        m = sendMessage()
+        m.chat_id = cmd_msg.chat.id
+        m.text = _(u"Hello, I'm *AQI monitor bot*.\nFor help, please use /help command.")
+        m.reply_markup = self.inline_keyboard()
+        return m
 
     def on_command_help(self, _args, _msg):
         return _(u'*Available commands:*\n\n' +
                  u'/aqi - show current AQI value\n'
-                 u'/pm - show current PM values')
+                 u'/pm - show current PM values\n'
+                 u'/sensor_info - show PM sensor information')
 
     def on_command_aqi(self, _args, _msg):
         data_timestamp = self.aqi_monitor.data_timestamp
@@ -66,3 +73,35 @@ class Bot(service.Service, BotPlugin):
     def on_command_sensor_info(self, _args, _msg):
         sensor_fw = yield self.aqi_monitor.sensor_firmware_version()
         defer.returnValue(_(u"PM sensor info:\nFirmware version: *%(fw)s*") % {'fw': sensor_fw})
+
+    @defer.inlineCallbacks
+    def on_callback_query(self, callback_query):
+        # create callback query result
+        m = answerCallbackQuery()
+        m.callback_query_id = callback_query.id
+        yield self.send_method(m)
+
+        # update message with command result
+        m = editMessageText()
+        m.chat_id = callback_query.message.chat.id
+        m.message_id = callback_query.message.message_id
+        m.text = yield self.on_command(callback_query.data)
+        m.parse_mode = 'Markdown'
+        m.reply_markup = self.inline_keyboard()
+        yield self.send_method(m)
+
+        defer.returnValue(True)
+
+    def inline_keyboard(self):
+        keyboard = InlineKeyboardMarkup()
+        buttons = []
+        b = InlineKeyboardButton()
+        b.text = 'AQI'
+        b.callback_data = 'aqi'
+        buttons.append(b)
+        b = InlineKeyboardButton()
+        b.text = 'PM'
+        b.callback_data = 'pm'
+        buttons.append(b)
+        keyboard.inline_keyboard = [buttons]
+        return keyboard
