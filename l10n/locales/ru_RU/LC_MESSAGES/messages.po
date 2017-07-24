@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-07-22 17:10+0300\n"
+"POT-Creation-Date: 2017-07-24 13:56+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru_RU\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-#: telegram/bot.py:41
+#: telegram/bot.py:43
 #, python-format
 msgid ""
 "Unknown command: /%(cmd)s\n"
@@ -29,7 +29,7 @@ msgstr ""
 "Неизвестная команда: /%(cmd)s\n"
 "Используйте /help для получения списка доступных команд."
 
-#: telegram/bot.py:47
+#: telegram/bot.py:49
 msgid ""
 "Hello, I'm *AQI monitor bot*.\n"
 "For help, please use /help command."
@@ -37,30 +37,30 @@ msgstr ""
 "Привет! Я бот мониторинга качества воздуха (AQI).\n"
 "Для получения помощи используйте команду /help."
 
-#: telegram/bot.py:52
+#: telegram/bot.py:55
 msgid ""
 "*Available commands:*\n"
 "\n"
 "/aqi - show current AQI value\n"
 "/pm - show current PM values\n"
-"/sensor_info - show PM sensor information"
+"/sensor\\_info - show PM sensor information"
 msgstr ""
 "*Доступные команды:*\n"
 "\n"
 "/aqi - показать текущее значение AQI\n"
-"/pm - показать значения концентраций частиц"
-"/sensor_info - показать информацию о датчике частиц"
+"/pm - показать значения концентраций частиц\n"
+"/sensor\\_info - показать информацию о датчике частиц"
 
-#: telegram/bot.py:60 telegram/bot.py:68
+#: telegram/bot.py:63 telegram/bot.py:71
 msgid "No data from PM sensor obtained yet."
 msgstr "Отсутствуют данные с PM-датчика."
 
-#: telegram/bot.py:63
+#: telegram/bot.py:66
 #, python-format
 msgid "AQI: *%(aqi)s* (updated %(rtime)s ago)"
 msgstr "AQI: *%(aqi)s* (обновлено %(rtime)s назад)"
 
-#: telegram/bot.py:71
+#: telegram/bot.py:74
 #, python-format
 msgid ""
 "PM2.5: *%(pm_25)s* μg/m^3\n"
@@ -71,7 +71,7 @@ msgstr ""
 "PM10: *%(pm_10)s* μg/m^3\n"
 "(обновлено %(rtime)s назад)"
 
-#: telegram/bot.py:77
+#: telegram/bot.py:80
 #, python-format
 msgid ""
 "PM sensor info:\n"

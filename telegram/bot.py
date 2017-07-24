@@ -32,12 +32,11 @@ class Bot(service.Service, BotPlugin):
     def startService(self):
         self.aqi_monitor = self.parent.getServiceNamed('aqi_monitor')
 
-    @staticmethod
-    def format_timedelta(from_timestamp_secs, to_timestamp_secs=None):
+    def format_timedelta(self, from_timestamp_secs, to_timestamp_secs=None):
         if to_timestamp_secs is None:
             to_timestamp_secs = time.time()
         td = timedelta(seconds=to_timestamp_secs-from_timestamp_secs)
-        return babel.dates.format_timedelta(td)
+        return babel.dates.format_timedelta(td, locale=self.l10n_support.locale)
 
     def on_unknown_command(self, cmd):
         return _(u'Unknown command: /%(cmd)s\n' +
@@ -47,14 +46,15 @@ class Bot(service.Service, BotPlugin):
         m = sendMessage()
         m.chat_id = cmd_msg.chat.id
         m.text = _(u"Hello, I'm *AQI monitor bot*.\nFor help, please use /help command.")
+        m.parse_mode = 'Markdown'
         m.reply_markup = self.inline_keyboard()
         return m
 
     def on_command_help(self, _args, _msg):
         return _(u'*Available commands:*\n\n' +
-                 u'/aqi - show current AQI value\n'
-                 u'/pm - show current PM values\n'
-                 u'/sensor_info - show PM sensor information')
+                 u'/aqi - show current AQI value\n' +
+                 u'/pm - show current PM values\n' +
+                 u'/sensor\_info - show PM sensor information')
 
     def on_command_aqi(self, _args, _msg):
         data_timestamp = self.aqi_monitor.data_timestamp
