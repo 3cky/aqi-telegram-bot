@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-07-24 13:56+0300\n"
+"POT-Creation-Date: 2017-07-24 16:05+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,20 +17,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-#: telegram/bot.py:43
+#: telegram/bot.py:42
 #, python-format
 msgid ""
 "Unknown command: /%(cmd)s\n"
 "Please use /help for list of available commands."
 msgstr ""
 
-#: telegram/bot.py:49
+#: telegram/bot.py:48
 msgid ""
 "Hello, I'm *AQI monitor bot*.\n"
 "For help, please use /help command."
 msgstr ""
 
-#: telegram/bot.py:55
+#: telegram/bot.py:54
 msgid ""
 "*Available commands:*\n"
 "\n"
@@ -39,16 +39,20 @@ msgid ""
 "/sensor\\_info - show PM sensor information"
 msgstr ""
 
-#: telegram/bot.py:63 telegram/bot.py:71
+#: telegram/bot.py:71
+msgid "Refresh"
+msgstr ""
+
+#: telegram/bot.py:80 telegram/bot.py:89
 msgid "No data from PM sensor obtained yet."
 msgstr ""
 
-#: telegram/bot.py:66
+#: telegram/bot.py:83
 #, python-format
 msgid "AQI: *%(aqi)s* (updated %(rtime)s ago)"
 msgstr ""
 
-#: telegram/bot.py:74
+#: telegram/bot.py:92
 #, python-format
 msgid ""
 "PM2.5: *%(pm_25)s* μg/m^3\n"
@@ -56,7 +60,7 @@ msgid ""
 "(updated %(rtime)s ago)"
 msgstr ""
 
-#: telegram/bot.py:80
+#: telegram/bot.py:99
 #, python-format
 msgid ""
 "PM sensor info:\n"
