@@ -24,17 +24,12 @@ class L10nSupport(object):
         except:  # @IgnorePep8
             t.install()  # Python 3
 
-    def get_locales(self):
+    @property
+    def locales(self):
         return LOCALES
 
-    def get_locale(self):
-        return self.locale
-
     def to_locale(self, lang):
-        for l in self.get_locales():
+        for l in self.locales:
             if l.startswith(lang):
                 return l
         return None
-
-    def get_translations(self):
-        return self.translations
