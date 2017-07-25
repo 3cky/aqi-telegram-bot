@@ -15,7 +15,7 @@ from twisted.application import service
 
 from TelegramBot.plugin.bot import BotPlugin
 from TelegramBotAPI.types import InlineKeyboardMarkup, InlineKeyboardButton
-from TelegramBotAPI.types.methods import sendMessage, answerCallbackQuery, editMessageText
+from TelegramBotAPI.types.methods import Method, sendMessage, answerCallbackQuery, editMessageText
 
 
 class Bot(service.Service, BotPlugin):
@@ -103,11 +103,13 @@ class Bot(service.Service, BotPlugin):
         # update message with command result (if text updated)
         cmd = callback_query.data
         msg = callback_query.message
-        cmd_resp = yield self.on_command(cmd, cmd_msg=msg)
-        text = cmd_resp.text
-        plain_text = BeautifulSoup(markdown2.markdown(text), "html.parser").get_text().strip()
+        cmd_result = yield self.on_command(cmd, cmd_msg=msg)
+        if isinstance(cmd_result, Method):
+            cmd_result = cmd_result.text
+        plain_text = BeautifulSoup(markdown2.markdown(cmd_result),
+                                   "html.parser").get_text().strip()
         if plain_text != msg.text:
-            m = self.cmd_response(editMessageText, msg.chat.id, text, cmd)
+            m = self.cmd_response(editMessageText, msg.chat.id, cmd_result, cmd)
             m.message_id = msg.message_id
             yield self.send_method(m)
 
