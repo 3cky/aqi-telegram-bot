@@ -14,15 +14,13 @@ from twisted.application import service
 from TelegramBot.service.bot import BotService
 from TelegramBot.client.twistedclient import TwistedClient as TelegramClient
 
-from l10n import LocalizationSupport
+from l10n import L10nSupport
 from aqimon.monitor import AqiMonitor
 from telegram.bot import Bot
 
 from configparser import ConfigParser
 
 import codecs
-
-import humanfriendly
 
 TAP_NAME = "aqi-telegram-bot"
 
@@ -91,7 +89,7 @@ class ServiceManager(object):
         if cfg.has_option('telegram', 'lang'):
             lang = cfg.get('telegram', 'lang')
 
-        l10n_support = LocalizationSupport(lang)
+        l10n_support = L10nSupport(lang)
 
         sensor_device = cfg.get('sensor', 'device') \
             if cfg.has_option('sensor', 'device') else DEFAULT_SENSOR_DEVICE
