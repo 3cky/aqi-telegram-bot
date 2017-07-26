@@ -25,6 +25,8 @@ class Bot(service.Service, BotPlugin):
     '''
     name = 'aqi_telegram_bot'
 
+    aqi_symbols = u'😃😐😕☹️😧😵'
+
     def __init__(self, l10n_support):
         BotPlugin.__init__(self)
         self.l10n_support = l10n_support
@@ -42,7 +44,7 @@ class Bot(service.Service, BotPlugin):
         return _(u'Unknown command: /%(cmd)s\n' +
                  u'Please use /help for list of available commands.') % {'cmd': cmd}
 
-    def on_command_start(self, _args, cmd_msg):
+    def on_command_start(self, _args, _cmd_msg):
         return _(u"Hello, I'm *AQI monitor bot*.\nFor help, please use /help command.")
 
     def on_command_help(self, _args, _msg):
@@ -74,8 +76,10 @@ class Bot(service.Service, BotPlugin):
         if data_timestamp is None:
             return _(u'No data from PM sensor obtained yet.')
         aqi = self.aqi_monitor.current_aqi()
+        aqi_symbol = self.aqi_symbols[self.aqi_monitor.current_aqi_level()]
         rtime = self.format_timedelta(data_timestamp)
-        text = _(u'AQI: *%(aqi)s* (updated %(rtime)s ago)') % {'aqi': aqi, 'rtime': rtime}
+        text = _(u'AQI: *%(aqi)s* %(aqi_symbol)s (updated %(rtime)s ago)') % \
+            {'aqi': aqi, 'aqi_symbol': aqi_symbol, 'rtime': rtime}
         return self.cmd_response(sendMessage, msg.chat.id, text, 'aqi')
 
     def on_command_pm(self, _args, msg):

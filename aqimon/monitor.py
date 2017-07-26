@@ -70,6 +70,22 @@ class AqiMonitor(service.Service):
         self.pm_25 = pm_25
         self.pm_10 = pm_10
 
+    def current_aqi_level(self):
+        if self.data_timestamp is None:
+            return None
+        aqi_level = self.current_aqi()
+        if aqi_level <= 50:
+            return 0  # Good
+        elif aqi_level <= 100:
+            return 1  # Moderate
+        elif aqi_level <= 150:
+            return 2  # Unhealthy for Sensitive Groups
+        elif aqi_level <= 200:
+            return 3  # Unhealthy
+        elif aqi_level <= 300:
+            return 4  # Very Unhealthy
+        return 5      # Hazardous
+
     def current_aqi(self):
         if self.data_timestamp is None:
             return None
