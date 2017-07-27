@@ -72,22 +72,22 @@ class Bot(service.Service, BotPlugin):
         return keyboard
 
     def on_command_aqi(self, _args, msg):
-        data_timestamp = self.aqi_monitor.data_timestamp
-        if data_timestamp is None:
+        pm_timestamp = self.aqi_monitor.pm_timestamp
+        if pm_timestamp is None:
             return _(u'No data from PM sensor obtained yet.')
         aqi = self.aqi_monitor.current_aqi()
         aqi_symbol = self.aqi_symbols[self.aqi_monitor.current_aqi_level()]
-        rtime = self.format_timedelta(data_timestamp)
+        rtime = self.format_timedelta(pm_timestamp)
         text = _(u'AQI: *%(aqi)s* %(aqi_symbol)s (updated %(rtime)s ago)') % \
             {'aqi': aqi, 'aqi_symbol': aqi_symbol, 'rtime': rtime}
         return self.cmd_response(sendMessage, msg.chat.id, text, 'aqi')
 
     def on_command_pm(self, _args, msg):
-        data_timestamp = self.aqi_monitor.data_timestamp
-        if data_timestamp is None:
+        pm_timestamp = self.aqi_monitor.pm_timestamp
+        if pm_timestamp is None:
             return _(u'No data from PM sensor obtained yet.')
         pm_25, pm_10 = self.aqi_monitor.current_pm()
-        rtime = self.format_timedelta(data_timestamp)
+        rtime = self.format_timedelta(pm_timestamp)
         text = _(u'PM2.5: *%(pm_25)s* μg/m^3\nPM10: *%(pm_10)s* μg/m^3\n' +
                  u'(updated %(rtime)s ago)') % {'pm_25': pm_25, 'pm_10': pm_10, 'rtime': rtime}
         return self.cmd_response(sendMessage, msg.chat.id, text, 'pm')

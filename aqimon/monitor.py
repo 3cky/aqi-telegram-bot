@@ -10,6 +10,7 @@ from twisted.internet import reactor, defer
 from twisted.internet.serialport import SerialPort
 from serial.serialutil import SerialException
 
+from aqimon.db import DataStorage
 from aqimon.sensor import Sds011, SensorDisconnected
 
 
@@ -22,15 +23,16 @@ class AqiMonitor(service.Service):
 
     sensor_reconnect_timeout = 5
 
-    def __init__(self, sensor_device, sensor_baudrate, poll_period, debug=False):
+    def __init__(self, db_session, sensor_device, sensor_baudrate, poll_period, debug=False):
         self.debug = debug
         self.sensor = None
         self.sensor_device = sensor_device
         self.sensor_baudrate = sensor_baudrate
         self.poll_period = poll_period
-        self.data_timestamp = None
+        self.pm_timestamp = None
         self.pm_25 = None
         self.pm_10 = None
+        self.data_storage = DataStorage(db_session)
 
     def startService(self):
         self._bot = self.parent.getServiceNamed('aqi_telegram_bot')
@@ -66,12 +68,18 @@ class AqiMonitor(service.Service):
             log.msg("Ignore invalid sensor data: PM2.5: %.1f, PM10: %.1f" % (pm_25, pm_10))
             return
         log.msg("Sensor data received, PM2.5: %.1f, PM10: %.1f" % (pm_25, pm_10))
-        self.data_timestamp = time.time()
         self.pm_25 = pm_25
         self.pm_10 = pm_10
+        self.pm_timestamp = time.time()
+        self.data_storage.add_pm_data(int(self.pm_timestamp), pm_25, pm_10)
+
+    def sensor_firmware_version(self):
+        if self.sensor is None or not self.sensor.connected:
+            raise SensorDisconnected("Can't get sensor firmware version: sensor not connected")
+        return self.sensor.get_firmware_version()
 
     def current_aqi_level(self):
-        if self.data_timestamp is None:
+        if self.pm_timestamp is None:
             return None
         aqi_level = self.current_aqi()
         if aqi_level <= 50:
@@ -87,14 +95,9 @@ class AqiMonitor(service.Service):
         return 5      # Hazardous
 
     def current_aqi(self):
-        if self.data_timestamp is None:
+        if self.pm_timestamp is None:
             return None
         return aqi.to_aqi([(aqi.POLLUTANT_PM25, self.pm_25), (aqi.POLLUTANT_PM10, self.pm_10)])
 
     def current_pm(self):
         return self.pm_25, self.pm_10
-
-    def sensor_firmware_version(self):
-        if self.sensor is None or not self.sensor.connected:
-            raise SensorDisconnected("Can't get sensor firmware version: sensor not connected")
-        return self.sensor.get_firmware_version()
