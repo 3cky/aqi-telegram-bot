@@ -10,7 +10,6 @@ from twisted.internet import reactor, defer
 from twisted.internet.serialport import SerialPort
 from serial.serialutil import SerialException
 
-from aqimon.db import DataStorage
 from aqimon.sensor import Sds011, SensorDisconnected
 
 
@@ -23,7 +22,7 @@ class AqiMonitor(service.Service):
 
     sensor_reconnect_timeout = 5
 
-    def __init__(self, db_session, sensor_device, sensor_baudrate, poll_period, debug=False):
+    def __init__(self, aqi_storage, sensor_device, sensor_baudrate, poll_period, debug=False):
         self.debug = debug
         self.sensor = None
         self.sensor_device = sensor_device
@@ -32,7 +31,7 @@ class AqiMonitor(service.Service):
         self.pm_timestamp = None
         self.pm_25 = None
         self.pm_10 = None
-        self.data_storage = DataStorage(db_session)
+        self.aqi_storage = aqi_storage
 
     def startService(self):
         self._bot = self.parent.getServiceNamed('aqi_telegram_bot')
@@ -71,7 +70,7 @@ class AqiMonitor(service.Service):
         self.pm_25 = pm_25
         self.pm_10 = pm_10
         self.pm_timestamp = time.time()
-        self.data_storage.add_pm_data(int(self.pm_timestamp), pm_25, pm_10)
+        self.aqi_storage.add_pm_data(int(self.pm_timestamp), pm_25, pm_10)
 
     def sensor_firmware_version(self):
         if self.sensor is None or not self.sensor.connected:

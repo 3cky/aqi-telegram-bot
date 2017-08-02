@@ -8,3 +8,4 @@
 /twistd.pid
 /deploy.sh
 __pycache__/
+*.sh

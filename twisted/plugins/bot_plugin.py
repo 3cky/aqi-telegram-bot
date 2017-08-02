@@ -15,7 +15,7 @@ from TelegramBot.service.bot import BotService
 from TelegramBot.client.twistedclient import TwistedClient as TelegramClient
 
 from l10n import L10nSupport
-from aqimon.monitor import AqiMonitor
+from aqimon import AqiMonitor, AqiStorage, AqiPlot
 from telegram.bot import Bot
 from db import DbSession
 
@@ -107,11 +107,14 @@ class ServiceManager(object):
         poll_period = int(cfg.get('sensor', 'poll_period')) \
             if cfg.has_option('sensor', 'poll_period') else DEFAULT_POLL_PERIOD
 
-        aqi_monitor = AqiMonitor(db_session, sensor_device, sensor_baudrate,
+        aqi_storage = AqiStorage(db_session)
+        aqi_monitor = AqiMonitor(aqi_storage, sensor_device, sensor_baudrate,
                                  poll_period, debug=debug)
         aqi_monitor.setServiceParent(application)
 
-        bot = Bot(l10n_support)
+        aqi_plot = AqiPlot(l10n_support, aqi_storage)
+
+        bot = Bot(l10n_support, aqi_plot)
         bot.setServiceParent(application)
 
         telegramBot = BotService(plugins=[bot])

@@ -4,10 +4,6 @@ import time
 
 import babel.dates
 
-import markdown2
-
-from bs4 import BeautifulSoup
-
 from datetime import timedelta
 
 from twisted.internet import defer
@@ -15,7 +11,8 @@ from twisted.application import service
 
 from TelegramBot.plugin.bot import BotPlugin
 from TelegramBotAPI.types import InlineKeyboardMarkup, InlineKeyboardButton
-from TelegramBotAPI.types.methods import Method, sendMessage, answerCallbackQuery, editMessageText
+from TelegramBotAPI.types.methods import Method, sendMessage, answerCallbackQuery, \
+    deleteMessage, sendPhoto
 
 
 class Bot(service.Service, BotPlugin):
@@ -27,9 +24,10 @@ class Bot(service.Service, BotPlugin):
 
     aqi_symbols = u'😃😐😕☹️😧😵'
 
-    def __init__(self, l10n_support):
+    def __init__(self, l10n_support, aqi_plot):
         BotPlugin.__init__(self)
         self.l10n_support = l10n_support
+        self.aqi_plot = aqi_plot
 
     def startService(self):
         self.aqi_monitor = self.parent.getServiceNamed('aqi_monitor')
@@ -42,7 +40,8 @@ class Bot(service.Service, BotPlugin):
 
     def on_unknown_command(self, cmd):
         return _(u'Unknown command: /%(cmd)s\n' +
-                 u'Please use /help for list of available commands.') % {'cmd': cmd}
+                 u'Please use /help for list of available commands.') % \
+            {'cmd': cmd.replace('_', '\_')}
 
     def on_command_start(self, _args, _cmd_msg):
         return _(u"Hello, I'm *AQI monitor bot*.\nFor help, please use /help command.")
@@ -53,8 +52,8 @@ class Bot(service.Service, BotPlugin):
                  u'/pm - show current PM values\n' +
                  u'/sensor\_info - show PM sensor information')
 
-    def cmd_response(self, resp, chat_id, text, cmd):
-        m = resp()
+    def cmd_response(self, chat_id, text, cmd):
+        m = sendMessage()
         m.chat_id = chat_id
         m.text = text
         m.parse_mode = 'Markdown'
@@ -80,7 +79,7 @@ class Bot(service.Service, BotPlugin):
         rtime = self.format_timedelta(pm_timestamp)
         text = _(u'AQI: *%(aqi)s* %(aqi_symbol)s (updated %(rtime)s ago)') % \
             {'aqi': aqi, 'aqi_symbol': aqi_symbol, 'rtime': rtime}
-        return self.cmd_response(sendMessage, msg.chat.id, text, 'aqi')
+        return self.cmd_response(msg.chat.id, text, 'aqi')
 
     def on_command_pm(self, _args, msg):
         pm_timestamp = self.aqi_monitor.pm_timestamp
@@ -90,7 +89,29 @@ class Bot(service.Service, BotPlugin):
         rtime = self.format_timedelta(pm_timestamp)
         text = _(u'PM2.5: *%(pm_25)s* μg/m^3\nPM10: *%(pm_10)s* μg/m^3\n' +
                  u'(updated %(rtime)s ago)') % {'pm_25': pm_25, 'pm_10': pm_10, 'rtime': rtime}
-        return self.cmd_response(sendMessage, msg.chat.id, text, 'pm')
+        return self.cmd_response(msg.chat.id, text, 'pm')
+
+    @defer.inlineCallbacks
+    def on_command_pm_hourly(self, _args, msg):
+        img = yield self.aqi_plot.plot_hourly_pm_data()
+        if img is None:
+            return _(u'Hourly PM data is unavailable.')
+        m = sendPhoto()
+        m.chat_id = msg.chat.id
+        m.photo = img
+        m.reply_markup = self.cmd_refresh_button('pm_hourly')
+        return m
+
+    @defer.inlineCallbacks
+    def on_command_pm_daily(self, _args, msg):
+        img = yield self.aqi_plot.plot_daily_pm_data()
+        if img is None:
+            return _(u'Daily PM data is unavailable.')
+        m = sendPhoto()
+        m.chat_id = msg.chat.id
+        m.photo = img
+        m.reply_markup = self.cmd_refresh_button('pm_daily')
+        return m
 
     @defer.inlineCallbacks
     def on_command_sensor_info(self, _args, _msg):
@@ -104,17 +125,23 @@ class Bot(service.Service, BotPlugin):
         m.callback_query_id = callback_query.id
         yield self.send_method(m)
 
-        # update message with command result (if text updated)
+        # get callback command result
         cmd = callback_query.data
         msg = callback_query.message
         cmd_result = yield self.on_command(cmd, cmd_msg=msg)
-        if isinstance(cmd_result, Method):
-            cmd_result = cmd_result.text
-        plain_text = BeautifulSoup(markdown2.markdown(cmd_result),
-                                   "html.parser").get_text().strip()
-        if plain_text != msg.text:
-            m = self.cmd_response(editMessageText, msg.chat.id, cmd_result, cmd)
-            m.message_id = msg.message_id
+
+        # delete old message, if possible
+        m = deleteMessage()
+        m.chat_id = msg.chat.id
+        m.message_id = msg.message_id
+        try:
             yield self.send_method(m)
+        except Exception:
+            pass
+
+        # send message with callback command result
+        if not isinstance(cmd_result, Method):
+            cmd_result = self.cmd_response(msg.chat.id, cmd_result, cmd)
+        yield self.send_method(cmd_result)
 
         defer.returnValue(True)
