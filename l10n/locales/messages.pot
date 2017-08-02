@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-07-26 12:01+0300\n"
+"POT-Creation-Date: 2017-08-02 19:33+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,20 +17,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-#: telegram/bot.py:44
+#: aqimon/plot.py:89
+msgid "Hourly PM concentrations"
+msgstr ""
+
+#: aqimon/plot.py:95
+msgid "Daily PM concentrations"
+msgstr ""
+
+#: aqimon/plot.py:127
+msgid "Hourly AQI values"
+msgstr ""
+
+#: aqimon/plot.py:133
+msgid "Daily AQI values"
+msgstr ""
+
+#: telegram/bot.py:42
 #, python-format
 msgid ""
 "Unknown command: /%(cmd)s\n"
 "Please use /help for list of available commands."
 msgstr ""
 
-#: telegram/bot.py:48
+#: telegram/bot.py:47
 msgid ""
 "Hello, I'm *AQI monitor bot*.\n"
 "For help, please use /help command."
 msgstr ""
 
-#: telegram/bot.py:51
+#: telegram/bot.py:50
 msgid ""
 "*Available commands:*\n"
 "\n"
@@ -39,20 +55,20 @@ msgid ""
 "/sensor\\_info - show PM sensor information"
 msgstr ""
 
-#: telegram/bot.py:68
+#: telegram/bot.py:67
 msgid "Refresh"
 msgstr ""
 
-#: telegram/bot.py:77 telegram/bot.py:88
+#: telegram/bot.py:76 telegram/bot.py:87
 msgid "No data from PM sensor obtained yet."
 msgstr ""
 
-#: telegram/bot.py:81
+#: telegram/bot.py:80
 #, python-format
 msgid "AQI: *%(aqi)s* %(aqi_symbol)s (updated %(rtime)s ago)"
 msgstr ""
 
-#: telegram/bot.py:91
+#: telegram/bot.py:90
 #, python-format
 msgid ""
 "PM2.5: *%(pm_25)s* μg/m^3\n"
@@ -61,6 +77,22 @@ msgid ""
 msgstr ""
 
 #: telegram/bot.py:98
+msgid "Hourly PM data is unavailable."
+msgstr ""
+
+#: telegram/bot.py:109
+msgid "Daily PM data is unavailable."
+msgstr ""
+
+#: telegram/bot.py:120
+msgid "Hourly AQI data is unavailable."
+msgstr ""
+
+#: telegram/bot.py:131
+msgid "Daily AQI data is unavailable."
+msgstr ""
+
+#: telegram/bot.py:141
 #, python-format
 msgid ""
 "PM sensor info:\n"

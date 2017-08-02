@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-07-26 12:01+0300\n"
+"POT-Creation-Date: 2017-08-02 19:33+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru_RU\n"
@@ -20,7 +20,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-#: telegram/bot.py:44
+#: aqimon/plot.py:89
+msgid "Hourly PM concentrations"
+msgstr "Концентрации частиц (за час)"
+
+#: aqimon/plot.py:95
+msgid "Daily PM concentrations"
+msgstr "Концентрации частиц (за сутки)"
+
+#: aqimon/plot.py:127
+msgid "Hourly AQI values"
+msgstr "AQI (за час)"
+
+#: aqimon/plot.py:133
+msgid "Daily AQI values"
+msgstr "AQI (за сутки)"
+
+#: telegram/bot.py:42
 #, python-format
 msgid ""
 "Unknown command: /%(cmd)s\n"
@@ -29,7 +45,7 @@ msgstr ""
 "Неизвестная команда: /%(cmd)s\n"
 "Используйте /help для получения списка доступных команд."
 
-#: telegram/bot.py:48
+#: telegram/bot.py:47
 msgid ""
 "Hello, I'm *AQI monitor bot*.\n"
 "For help, please use /help command."
@@ -37,7 +53,7 @@ msgstr ""
 "Привет! Я бот мониторинга качества воздуха (AQI).\n"
 "Для получения помощи используйте команду /help."
 
-#: telegram/bot.py:51
+#: telegram/bot.py:50
 msgid ""
 "*Available commands:*\n"
 "\n"
@@ -51,20 +67,20 @@ msgstr ""
 "/pm - показать значения концентраций частиц\n"
 "/sensor\\_info - показать информацию о датчике частиц"
 
-#: telegram/bot.py:68
+#: telegram/bot.py:67
 msgid "Refresh"
 msgstr "Обновить"
 
-#: telegram/bot.py:77 telegram/bot.py:88
+#: telegram/bot.py:76 telegram/bot.py:87
 msgid "No data from PM sensor obtained yet."
 msgstr "Отсутствуют данные с PM-датчика."
 
-#: telegram/bot.py:81
+#: telegram/bot.py:80
 #, python-format
 msgid "AQI: *%(aqi)s* %(aqi_symbol)s (updated %(rtime)s ago)"
 msgstr "AQI: *%(aqi)s* %(aqi_symbol)s (обновлено %(rtime)s назад)"
 
-#: telegram/bot.py:91
+#: telegram/bot.py:90
 #, python-format
 msgid ""
 "PM2.5: *%(pm_25)s* μg/m^3\n"
@@ -76,6 +92,22 @@ msgstr ""
 "(обновлено %(rtime)s назад)"
 
 #: telegram/bot.py:98
+msgid "Hourly PM data is unavailable."
+msgstr "Данные о концентрациях частиц за прошедший час отсутствуют."
+
+#: telegram/bot.py:109
+msgid "Daily PM data is unavailable."
+msgstr "Данные о концентрациях частиц за прошедшие сутки отсутствуют."
+
+#: telegram/bot.py:120
+msgid "Hourly AQI data is unavailable."
+msgstr "Данные о значениях AQI за прошедший час отсутствуют."
+
+#: telegram/bot.py:131
+msgid "Daily AQI data is unavailable."
+msgstr "Данные о значениях AQI за прошедшие сутки отсутствуют."
+
+#: telegram/bot.py:141
 #, python-format
 msgid ""
 "PM sensor info:\n"
@@ -83,3 +115,4 @@ msgid ""
 msgstr ""
 "Информация о датчике частиц:\n"
 "Версия встроенного ПО: *%(fw)s*"
+

@@ -77,21 +77,25 @@ class AqiMonitor(service.Service):
             raise SensorDisconnected("Can't get sensor firmware version: sensor not connected")
         return self.sensor.get_firmware_version()
 
+    @staticmethod
+    def aqi_level(aqi):
+        if aqi <= 50:
+            return 0  # Good
+        elif aqi <= 100:
+            return 1  # Moderate
+        elif aqi <= 150:
+            return 2  # Unhealthy for Sensitive Groups
+        elif aqi <= 200:
+            return 3  # Unhealthy
+        elif aqi <= 300:
+            return 4  # Very Unhealthy
+        return 5      # Hazardous
+
     def current_aqi_level(self):
         if self.pm_timestamp is None:
             return None
-        aqi_level = self.current_aqi()
-        if aqi_level <= 50:
-            return 0  # Good
-        elif aqi_level <= 100:
-            return 1  # Moderate
-        elif aqi_level <= 150:
-            return 2  # Unhealthy for Sensitive Groups
-        elif aqi_level <= 200:
-            return 3  # Unhealthy
-        elif aqi_level <= 300:
-            return 4  # Very Unhealthy
-        return 5      # Hazardous
+        aqi = self.current_aqi()
+        return self.aqi_level(aqi)
 
     def current_aqi(self):
         if self.pm_timestamp is None:

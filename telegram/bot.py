@@ -114,6 +114,28 @@ class Bot(service.Service, BotPlugin):
         return m
 
     @defer.inlineCallbacks
+    def on_command_aqi_hourly(self, _args, msg):
+        img = yield self.aqi_plot.plot_hourly_aqi_data()
+        if img is None:
+            return _(u'Hourly AQI data is unavailable.')
+        m = sendPhoto()
+        m.chat_id = msg.chat.id
+        m.photo = img
+        m.reply_markup = self.cmd_refresh_button('aqi_hourly')
+        return m
+
+    @defer.inlineCallbacks
+    def on_command_aqi_daily(self, _args, msg):
+        img = yield self.aqi_plot.plot_daily_aqi_data()
+        if img is None:
+            return _(u'Daily AQI data is unavailable.')
+        m = sendPhoto()
+        m.chat_id = msg.chat.id
+        m.photo = img
+        m.reply_markup = self.cmd_refresh_button('aqi_daily')
+        return m
+
+    @defer.inlineCallbacks
     def on_command_sensor_info(self, _args, _msg):
         sensor_fw = yield self.aqi_monitor.sensor_firmware_version()
         defer.returnValue(_(u"PM sensor info:\nFirmware version: *%(fw)s*") % {'fw': sensor_fw})
