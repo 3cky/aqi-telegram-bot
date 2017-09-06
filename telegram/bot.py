@@ -77,7 +77,7 @@ class Bot(service.Service, BotPlugin):
         aqi = self.aqi_monitor.current_aqi()
         aqi_symbol = self.aqi_symbols[self.aqi_monitor.current_aqi_level()]
         rtime = self.format_timedelta(pm_timestamp)
-        text = _(u'AQI: *%(aqi)s* %(aqi_symbol)s (updated %(rtime)s ago)') % \
+        text = _(u'AQI: *%(aqi)s* %(aqi_symbol)s (measured %(rtime)s ago)') % \
             {'aqi': aqi, 'aqi_symbol': aqi_symbol, 'rtime': rtime}
         return self.cmd_response(msg.chat.id, text, 'aqi')
 
@@ -88,7 +88,7 @@ class Bot(service.Service, BotPlugin):
         pm_25, pm_10 = self.aqi_monitor.current_pm()
         rtime = self.format_timedelta(pm_timestamp)
         text = _(u'PM2.5: *%(pm_25)s* μg/m^3\nPM10: *%(pm_10)s* μg/m^3\n' +
-                 u'(updated %(rtime)s ago)') % {'pm_25': pm_25, 'pm_10': pm_10, 'rtime': rtime}
+                 u'(measured %(rtime)s ago)') % {'pm_25': pm_25, 'pm_10': pm_10, 'rtime': rtime}
         return self.cmd_response(msg.chat.id, text, 'pm')
 
     @defer.inlineCallbacks

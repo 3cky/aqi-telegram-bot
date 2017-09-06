@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-08-02 19:33+0300\n"
+"POT-Creation-Date: 2017-09-06 17:08+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,7 +65,7 @@ msgstr ""
 
 #: telegram/bot.py:80
 #, python-format
-msgid "AQI: *%(aqi)s* %(aqi_symbol)s (updated %(rtime)s ago)"
+msgid "AQI: *%(aqi)s* %(aqi_symbol)s (measured %(rtime)s ago)"
 msgstr ""
 
 #: telegram/bot.py:90
@@ -73,7 +73,7 @@ msgstr ""
 msgid ""
 "PM2.5: *%(pm_25)s* μg/m^3\n"
 "PM10: *%(pm_10)s* μg/m^3\n"
-"(updated %(rtime)s ago)"
+"(measured %(rtime)s ago)"
 msgstr ""
 
 #: telegram/bot.py:98
