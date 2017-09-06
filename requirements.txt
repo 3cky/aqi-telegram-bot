@@ -9,4 +9,3 @@ humanfriendly
 python-aqi
 matplotlib
 numpy
-scipy

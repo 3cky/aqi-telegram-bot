@@ -14,8 +14,6 @@ import aqi
 
 from datetime import timedelta
 
-from scipy.stats import binned_statistic
-
 from twisted.internet import defer
 from aqimon.monitor import AqiMonitor
 
@@ -34,15 +32,27 @@ class AqiPlot(object):
     def plot_data(self, ts, data, ts_start, ts_end, n_ts_bins, colors, labels, title, ylabel):
         ts_bins = np.linspace(ts_start, ts_end, n_ts_bins)
 
-        t = [datetime.datetime.fromtimestamp(ts_bin) for ts_bin in ts_bins[1:]]
+        d_bins = np.digitize(ts, ts_bins)
 
-        d_bins = [binned_statistic(ts, d, 'mean', ts_bins, (ts_start, ts_end))[0] for d in data]
+        data_bins = []
+        for d in data:
+            b = []
+            d = np.array(d)
+            for i in range(1, len(ts_bins)):
+                d_bin_i = d[d_bins == i]
+                if len(d_bin_i) > 0:
+                    b.append(np.mean(d_bin_i))
+                else:
+                    b.append(float('nan'))
+            data_bins.append(b)
 
         n_days = (ts_end-ts_start)/86400
         width = n_days*0.75/n_ts_bins
 
+        t = [datetime.datetime.fromtimestamp(ts_bin) for ts_bin in ts_bins[1:]]
+
         plt.figure()
-        for i, d in enumerate(d_bins):
+        for i, d in enumerate(data_bins):
             color = colors[i]
             if callable(color):
                 color = [color(v) for v in np.nan_to_num(d)]
