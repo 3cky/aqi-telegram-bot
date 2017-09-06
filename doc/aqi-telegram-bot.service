@@ -1,0 +1,19 @@
+[Unit]
+Description=AQI Telegram Bot
+
+[Service]
+ExecStart=/home/pi/venv/aqi-telegram-bot/bin/twistd \
+    --nodaemon \
+    --pidfile= \
+    -n aqi-telegram-bot \
+    --config /home/pi/venv/aqi-telegram-bot/etc/config.ini
+
+WorkingDirectory=/home/pi/venv/aqi-telegram-bot
+
+User=pi
+Group=nobody
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
