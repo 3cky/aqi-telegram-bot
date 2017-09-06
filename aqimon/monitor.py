@@ -42,8 +42,9 @@ class AqiMonitor(service.Service):
         try:
             self.serial_port = SerialPort(self.sensor, self.sensor_device, reactor,
                                           baudrate=self.sensor_baudrate)
+            self.serial_port.flushInput()
         except SerialException as se:
-            log.msg("Can't connected to sensor: %s" % se)
+            log.msg("Can't connect to sensor: %s" % se)
             reactor.callLater(self.sensor_reconnect_timeout,  # @UndefinedVariable
                               self.connect_sensor)
 
