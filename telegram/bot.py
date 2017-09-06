@@ -142,15 +142,15 @@ class Bot(service.Service, BotPlugin):
 
     @defer.inlineCallbacks
     def on_callback_query(self, callback_query):
-        # create callback query result
-        m = answerCallbackQuery()
-        m.callback_query_id = callback_query.id
-        yield self.send_method(m)
-
         # get callback command result
         cmd = callback_query.data
         msg = callback_query.message
         cmd_result = yield self.on_command(cmd, cmd_msg=msg)
+
+        # create callback query result
+        m = answerCallbackQuery()
+        m.callback_query_id = callback_query.id
+        yield self.send_method(m)
 
         # delete old message, if possible
         m = deleteMessage()
