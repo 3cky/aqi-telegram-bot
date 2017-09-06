@@ -3,8 +3,9 @@ from setuptools import setup
 setup(
     name='aqi-telegram-bot',
     packages=[
-        'aqi',
+        'aqimon',
         'telegram',
+        'db',
         'l10n',
         "twisted.plugins",
     ],
