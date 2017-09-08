@@ -12,6 +12,7 @@ setup(
     package_data={'l10n': ['locales/en_US/LC_MESSAGES/messages.mo',
                            'locales/ru_RU/LC_MESSAGES/messages.mo']},
     include_package_data=True,
+    zip_safe=False,
     version='0.1.0',
 )
 
