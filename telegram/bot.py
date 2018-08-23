@@ -48,9 +48,13 @@ class Bot(service.Service, BotPlugin):
 
     def on_command_help(self, _args, _msg):
         return _(u'*Available commands:*\n\n' +
+                 u'/sensor\_info - show PM sensor information\n' +
                  u'/aqi - show current AQI value\n' +
                  u'/pm - show current PM values\n' +
-                 u'/sensor\_info - show PM sensor information')
+                 u'/aqi\_hourly - show hourly AQI stats\n' +
+                 u'/aqi\_daily - show daily AQI stats\n' +
+                 u'/pm\_hourly - show hourly PM stats\n' +
+                 u'/pm\_daily - show daily PM stats')
 
     def cmd_response(self, chat_id, text, cmd):
         m = sendMessage()

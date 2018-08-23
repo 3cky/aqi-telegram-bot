@@ -1,35 +1,35 @@
 # Translations template for PROJECT.
-# Copyright (C) 2017 ORGANIZATION
+# Copyright (C) 2018 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-09-06 17:08+0300\n"
+"POT-Creation-Date: 2018-08-23 17:19+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.6.0\n"
 
-#: aqimon/plot.py:89
+#: aqimon/plot.py:99
 msgid "Hourly PM concentrations"
 msgstr ""
 
-#: aqimon/plot.py:95
+#: aqimon/plot.py:105
 msgid "Daily PM concentrations"
 msgstr ""
 
-#: aqimon/plot.py:127
+#: aqimon/plot.py:137
 msgid "Hourly AQI values"
 msgstr ""
 
-#: aqimon/plot.py:133
+#: aqimon/plot.py:143
 msgid "Daily AQI values"
 msgstr ""
 
@@ -50,25 +50,28 @@ msgstr ""
 msgid ""
 "*Available commands:*\n"
 "\n"
-"/aqi - show current AQI value\n"
+"/sensor\\_info - show PM sensor information/aqi - show current AQI value\n"
 "/pm - show current PM values\n"
-"/sensor\\_info - show PM sensor information"
+"/aqi_hourly - show hourly AQI stats\n"
+"/aqi_daily - show daily AQI stats\n"
+"/pm_hourly - show hourly PM stats\n"
+"/pm_daily - show daily PM stats\n"
 msgstr ""
 
-#: telegram/bot.py:67
+#: telegram/bot.py:71
 msgid "Refresh"
 msgstr ""
 
-#: telegram/bot.py:76 telegram/bot.py:87
+#: telegram/bot.py:80 telegram/bot.py:91
 msgid "No data from PM sensor obtained yet."
 msgstr ""
 
-#: telegram/bot.py:80
+#: telegram/bot.py:84
 #, python-format
 msgid "AQI: *%(aqi)s* %(aqi_symbol)s (measured %(rtime)s ago)"
 msgstr ""
 
-#: telegram/bot.py:90
+#: telegram/bot.py:94
 #, python-format
 msgid ""
 "PM2.5: *%(pm_25)s* μg/m^3\n"
@@ -76,23 +79,23 @@ msgid ""
 "(measured %(rtime)s ago)"
 msgstr ""
 
-#: telegram/bot.py:98
+#: telegram/bot.py:102
 msgid "Hourly PM data is unavailable."
 msgstr ""
 
-#: telegram/bot.py:109
+#: telegram/bot.py:113
 msgid "Daily PM data is unavailable."
 msgstr ""
 
-#: telegram/bot.py:120
+#: telegram/bot.py:124
 msgid "Hourly AQI data is unavailable."
 msgstr ""
 
-#: telegram/bot.py:131
+#: telegram/bot.py:135
 msgid "Daily AQI data is unavailable."
 msgstr ""
 
-#: telegram/bot.py:141
+#: telegram/bot.py:145
 #, python-format
 msgid ""
 "PM sensor info:\n"
