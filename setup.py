@@ -4,6 +4,7 @@ setup(
     name='aqi-telegram-bot',
     packages=[
         'aqimon',
+        'aqimon.plugins',
         'telegram',
         'db',
         'l10n',

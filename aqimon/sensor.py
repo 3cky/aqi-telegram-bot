@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 import struct
 
-from twisted.python import log, failure
+from twisted.python import failure
 
 from twisted.internet.protocol import Protocol
 from twisted.internet import defer, reactor
+from twisted.logger import Logger
+
 from queue import Queue
+
+log = Logger()
 
 
 class AsyncRequest(object):
@@ -130,32 +134,32 @@ class Sds011(Protocol):
 
     def message_received(self, msg):
         if self.debug:
-            log.msg("Received message: %s" % self._to_hex(msg))
+            log.debug("Received message: %s" % self._to_hex(msg))
         msg_type = msg[self.RESP_TYPE_POS]
         msg_data = msg[self.RESP_DATA_START:self.RESP_DATA_START+self.RESP_DATA_LENGTH]
         msg_checksum = msg[self.RESP_CHECKSUM_POS]
         data_checksum = self._checksum(msg_data)
         if data_checksum != msg_checksum:
-            log.msg("ERROR: Corrupted message: %s (checksum computed 0x%02x, expected 0x%02x)" %
-                    (self._to_hex(msg), data_checksum, msg_checksum))
+            log.error("Corrupted message: %s (checksum computed 0x%02x, expected 0x%02x)" %
+                      (self._to_hex(msg), data_checksum, msg_checksum))
         elif msg_type == self.RESP_TYPE_ACTIVE:
             pm_25, pm_10 = self._pm_data(msg_data)
             self.event_handler.sensor_data(pm_25, pm_10)
         elif msg_type == self.RESP_TYPE_QUERY:
             self.response_received(msg_data)
         else:
-            log.msg("ERROR: Unknown response type: 0x%02x, msg_data: %s" %
-                    (msg_type, self._to_hex(msg_data)))
+            log.error("Unknown response type: 0x%02x, msg_data: %s" %
+                      (msg_type, self._to_hex(msg_data)))
 
     def response_received(self, resp_data):
         resp_cmd = resp_data[0]
         if self.debug:
-            log.msg("Received response to cmd: 0x%02x, data: %s" %
-                    (resp_cmd, self._to_hex(resp_data[1:])))
+            log.debug("Received response to cmd: 0x%02x, data: %s" %
+                      (resp_cmd, self._to_hex(resp_data[1:])))
         req = self.req_queue.get(False)
         if resp_cmd != req.cmd:
             err_text = "Response cmd: 0x%02x, expected: 0x%02x" % (resp_cmd, req.cmd)
-            log.msg("ERROR: Unexpected response: %s", err_text)
+            log.error("Unexpected response: %s", err_text)
             req.d.errback(failure.Failure(UnexpectedResponse(err_text)))
             return
         if resp_cmd == self.CMD_STATE or resp_cmd == self.CMD_REPORT_MODE or \
@@ -164,7 +168,7 @@ class Sds011(Protocol):
         elif resp_cmd == self.CMD_FIRMWARE:
             req.d.callback("%02d%02d%02d" % (resp_data[1], resp_data[2], resp_data[3]))
         else:
-            log.msg("ERROR: Unknown response cmd: 0x%02x" % resp_cmd)
+            log.error("Unknown response cmd: 0x%02x" % resp_cmd)
 
     def send_message(self, cmd, mode, value=0):
         checksum = self._checksum(struct.pack('<3B10x2B', cmd, mode, value, 0xFF, 0xFF))
@@ -172,7 +176,7 @@ class Sds011(Protocol):
                           0xff, 0xff, checksum, self.MSG_TAIL)
         self.transport.write(msg)
         if self.debug:
-            log.msg("Sent message: %s" % self._to_hex(msg))
+            log.debug("Sent message: %s" % self._to_hex(msg))
 
     @staticmethod
     def _to_hex(data):

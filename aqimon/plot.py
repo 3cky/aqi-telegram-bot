@@ -4,6 +4,9 @@ import io
 import time
 import datetime
 
+import matplotlib
+matplotlib.use("Agg")  # use headless plotting
+
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
 from matplotlib.ticker import MaxNLocator
@@ -63,7 +66,8 @@ class AqiPlot(object):
         plt.gca().xaxis.set_major_formatter(DateFormatter('%H:%M'))
         plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True))
         plt.gcf().autofmt_xdate()
-        plt.legend(loc=2)
+        if any(labels):
+            plt.legend(loc=2)
         plt.grid(alpha=0.5)
 
         buf = io.BytesIO()
@@ -107,7 +111,7 @@ class AqiPlot(object):
 
     def plot_aqi_data(self, aqi_data, ts, ts_start, ts_end, ts_n_bins, title):
         def aqi_color_fn(a):
-            return self.aqi_colors[AqiMonitor.aqi_level(a)]
+            return self.aqi_colors[AqiMonitor.to_aqi_level(a)]
 
         return self.plot_data(ts, (aqi_data,), ts_start, ts_end, ts_n_bins,
                               (aqi_color_fn,), (None,), title, 'AQI')

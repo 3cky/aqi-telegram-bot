@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
-import logging
 
 from zope.interface import implementer  # @UnresolvedImport
 
@@ -16,6 +14,7 @@ from TelegramBot.client.twistedclient import TwistedClient as TelegramClient
 
 from l10n import L10nSupport
 from aqimon import AqiMonitor, AqiStorage, AqiPlot
+from aqimon.plugins import mqtt
 from telegram.bot import Bot
 from db import DbSession
 
@@ -31,12 +30,9 @@ DEFAULT_DB_FILENAME = 'db.sqlite'
 
 DEFAULT_SENSOR_DEVICE = '/dev/ttyUSB0'
 DEFAULT_SENSOR_BAUDRATE = 9600
-
-DEFAULT_POLL_PERIOD = 3  # 3 min
+DEFAULT_SENSOR_POLL_PERIOD = 3  # 3 min
 
 DEFAULT_LANG = 'en'
-
-LOG_FORMAT = '[%(levelname)1.1s %(asctime)s %(module)s:%(lineno)d] %(message)s'
 
 
 class ConfigurationError(Exception):
@@ -66,19 +62,16 @@ class ServiceManager(object):
 
         debug = options['debug']
 
-        logging.basicConfig(stream=sys.stdout, level=logging.DEBUG if debug else logging.INFO,
-                            format=LOG_FORMAT)
-
         # check configuration file is specified and exists
         if not options["config"]:
             raise ValueError('Configuration file not specified (try to check --help option)')
-        cfgFileName = options["config"]
-        if not os.path.isfile(cfgFileName):
-            raise ConfigurationError('Configuration file not found:', cfgFileName)
+        cfg_file_name = options["config"]
+        if not os.path.isfile(cfg_file_name):
+            raise ConfigurationError('Configuration file not found:', cfg_file_name)
 
         # read configuration file
         cfg = ConfigParser()
-        with codecs.open(cfgFileName, 'r', encoding='utf-8') as f:
+        with codecs.open(cfg_file_name, 'r', encoding='utf-8') as f:
             cfg.readfp(f)
 
         # get Telegram token from configuration
@@ -94,22 +87,29 @@ class ServiceManager(object):
         l10n_support = L10nSupport(lang)
 
         # initialize database session
-        db_filename = cfg.get('db', 'filename') if cfg.has_option('db', 'filename') \
-            else DEFAULT_DB_FILENAME
+        db_filename = cfg.get('db', 'filename', fallback=DEFAULT_DB_FILENAME)
         db_session = DbSession(db_filename)
 
         # sensor parameters
-        sensor_device = cfg.get('sensor', 'device') \
-            if cfg.has_option('sensor', 'device') else DEFAULT_SENSOR_DEVICE
-        sensor_baudrate = int(cfg.get('sensor', 'baudrate')) \
-            if cfg.has_option('sensor', 'baudrate') else DEFAULT_SENSOR_BAUDRATE
+        sensor_device = cfg.get('sensor', 'device', fallback=DEFAULT_SENSOR_DEVICE)
+        sensor_baudrate = int(cfg.get('sensor', 'baudrate', fallback=DEFAULT_SENSOR_BAUDRATE))
+        sensor_poll_period = int(cfg.get('sensor', 'poll_period',
+                                         fallback=DEFAULT_SENSOR_POLL_PERIOD))
 
-        poll_period = int(cfg.get('sensor', 'poll_period')) \
-            if cfg.has_option('sensor', 'poll_period') else DEFAULT_POLL_PERIOD
+        if cfg.has_section('mqtt'):
+            mqtt_section = cfg['mqtt']
+            mqtt_host = mqtt_section.get('host', mqtt.DEFAULT_BROKER_HOST)
+            mqtt_port = int(mqtt_section.get('port', mqtt.DEFAULT_BROKER_PORT))
+            mqtt_topic = mqtt_section.get('topic', mqtt.DEFAULT_TOPIC)
+            mqtt_user = mqtt_section.get('user', mqtt.DEFAULT_USER)
+            mqtt_password = mqtt_section.get('password', mqtt.DEFAULT_PASSWORD)
+            plugin = mqtt.MQTTPublisherPlugin(mqtt_host, mqtt_port, mqtt_topic,
+                                              mqtt_user, mqtt_password)
+            plugin.setServiceParent(application)
 
         aqi_storage = AqiStorage(db_session)
         aqi_monitor = AqiMonitor(aqi_storage, sensor_device, sensor_baudrate,
-                                 poll_period, debug=debug)
+                                 sensor_poll_period, debug=debug)
         aqi_monitor.setServiceParent(application)
 
         aqi_plot = AqiPlot(l10n_support, aqi_storage)

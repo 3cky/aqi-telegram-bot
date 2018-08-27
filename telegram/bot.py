@@ -14,6 +14,8 @@ from TelegramBotAPI.types import InlineKeyboardMarkup, InlineKeyboardButton
 from TelegramBotAPI.types.methods import Method, sendMessage, answerCallbackQuery, \
     deleteMessage, sendPhoto
 
+from aqimon import monitor
+
 
 class Bot(service.Service, BotPlugin):
     '''
@@ -30,7 +32,7 @@ class Bot(service.Service, BotPlugin):
         self.aqi_plot = aqi_plot
 
     def startService(self):
-        self.aqi_monitor = self.parent.getServiceNamed('aqi_monitor')
+        self.aqi_monitor = self.parent.getServiceNamed(monitor.AqiMonitor.name)
 
     def format_timedelta(self, from_timestamp_secs, to_timestamp_secs=None):
         if to_timestamp_secs is None:
@@ -78,8 +80,8 @@ class Bot(service.Service, BotPlugin):
         pm_timestamp = self.aqi_monitor.pm_timestamp
         if pm_timestamp is None:
             return _(u'No data from PM sensor obtained yet.')
-        aqi = self.aqi_monitor.current_aqi()
-        aqi_symbol = self.aqi_symbols[self.aqi_monitor.current_aqi_level()]
+        aqi = self.aqi_monitor.aqi
+        aqi_symbol = self.aqi_symbols[self.aqi_monitor.aqi_level]
         rtime = self.format_timedelta(pm_timestamp)
         text = _(u'AQI: *%(aqi)s* %(aqi_symbol)s (measured %(rtime)s ago)') % \
             {'aqi': aqi, 'aqi_symbol': aqi_symbol, 'rtime': rtime}
@@ -89,7 +91,7 @@ class Bot(service.Service, BotPlugin):
         pm_timestamp = self.aqi_monitor.pm_timestamp
         if pm_timestamp is None:
             return _(u'No data from PM sensor obtained yet.')
-        pm_25, pm_10 = self.aqi_monitor.current_pm()
+        pm_25, pm_10 = self.aqi_monitor.pm
         rtime = self.format_timedelta(pm_timestamp)
         text = _(u'PM2.5: *%(pm_25)s* μg/m^3\nPM10: *%(pm_10)s* μg/m^3\n' +
                  u'(measured %(rtime)s ago)') % {'pm_25': pm_25, 'pm_10': pm_10, 'rtime': rtime}
@@ -141,7 +143,7 @@ class Bot(service.Service, BotPlugin):
 
     @defer.inlineCallbacks
     def on_command_sensor_info(self, _args, _msg):
-        sensor_fw = yield self.aqi_monitor.sensor_firmware_version()
+        sensor_fw = yield self.aqi_monitor.sensor_firmware_version
         defer.returnValue(_(u"PM sensor info:\nFirmware version: *%(fw)s*") % {'fw': sensor_fw})
 
     @defer.inlineCallbacks

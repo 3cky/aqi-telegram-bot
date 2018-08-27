@@ -1,6 +1,7 @@
 six
 configparser
 twisted
+twisted-mqtt
 pyserial
 -e git://github.com/3cky/pyTelegramBotAPI.git#egg=TelegramBotAPI
 -e git://github.com/3cky/txTelegramBot.git#egg=txTelegramBot
